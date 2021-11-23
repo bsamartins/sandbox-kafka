@@ -19,7 +19,8 @@ services:
       - ALLOW_PLAINTEXT_LISTENER=yes
     depends_on:
       - zookeeper
-  schemaregistry:
+
+  schema-registry:
     image: confluentinc/cp-schema-registry:5.1.2
     restart: always
     depends_on:
