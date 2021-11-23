@@ -27,7 +27,7 @@ fun main() {
     while (true) {
         val records = consumer.poll(Duration.ofMillis(100))
         for (record in records) {
-            println("key=$${record.key()}, value=${record.value()}, headers=${record.headers()}")
+            println("key=$${record.key()}, value=${record.value()}")
         }
     }
 }

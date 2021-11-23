@@ -12,7 +12,7 @@ import java.util.Properties
 fun main() {
     val props = Properties()
     props[ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG] = "localhost:9092"
-    props[ConsumerConfig.GROUP_ID_CONFIG] = "group1"
+    props[ConsumerConfig.GROUP_ID_CONFIG] = "group-v1"
     props[ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG] = "true"
     props[ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG] = "1000"
     props[ConsumerConfig.AUTO_OFFSET_RESET_CONFIG] = "earliest"
@@ -27,7 +27,7 @@ fun main() {
     while (true) {
         val records = consumer.poll(Duration.ofMillis(100))
         for (record in records) {
-            println("key=$${record.key()}, value=${record.value()}, headers=${record.headers()}")
+            println("key=$${record.key()}, value=${record.value()}")
         }
     }
 }
