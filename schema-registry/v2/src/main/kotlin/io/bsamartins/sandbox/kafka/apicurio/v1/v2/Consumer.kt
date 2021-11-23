@@ -1,4 +1,4 @@
-package io.bsamartins.sandbox.kafka.schemaregistry
+package io.bsamartins.sandbox.kafka.apicurio.v1.v2
 
 import io.bsamartins.schema.User
 import io.confluent.kafka.serializers.AbstractKafkaSchemaSerDeConfig
@@ -12,7 +12,7 @@ import java.util.Properties
 fun main() {
     val props = Properties()
     props[ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG] = "localhost:9092"
-    props[ConsumerConfig.GROUP_ID_CONFIG] = "group-v1"
+    props[ConsumerConfig.GROUP_ID_CONFIG] = "group-v2"
     props[ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG] = "true"
     props[ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG] = "1000"
     props[ConsumerConfig.AUTO_OFFSET_RESET_CONFIG] = "earliest"

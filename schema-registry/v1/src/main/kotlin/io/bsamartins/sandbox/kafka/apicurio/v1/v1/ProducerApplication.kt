@@ -1,4 +1,4 @@
-package io.bsamartins.sandbox.kafka.schemaregistry
+package io.bsamartins.sandbox.kafka.apicurio.v1.v1
 
 import io.bsamartins.schema.User
 import org.apache.kafka.clients.producer.ProducerRecord
@@ -15,7 +15,6 @@ fun main() {
             .setName("Tom Cruise")
             .setFavoriteColor("Red")
             .setFavoriteNumber(10)
-            .setAge(59)
             .build()
     )
     producer.send(record).get()

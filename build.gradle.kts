@@ -8,7 +8,7 @@ subprojects {
 
     repositories {
         mavenCentral()
-        maven(url="https://packages.confluent.io/maven")
+        maven(url = "https://packages.confluent.io/maven")
     }
 
     dependencies {
