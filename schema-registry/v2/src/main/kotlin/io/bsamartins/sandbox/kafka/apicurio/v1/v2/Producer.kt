@@ -1,12 +1,16 @@
-package io.bsamartins.sandbox.kafka.apicurio.v1.v1
+package io.bsamartins.sandbox.kafka.apicurio.v1.v2
 
 import io.bsamartins.schema.User
 import io.confluent.kafka.serializers.KafkaAvroSerializerConfig
 import org.apache.kafka.clients.producer.KafkaProducer
 import org.apache.kafka.clients.producer.Producer
 import org.apache.kafka.clients.producer.ProducerConfig
+import org.apache.kafka.clients.producer.ProducerRecord
 import org.apache.kafka.common.serialization.StringSerializer
 import java.util.Properties
+import java.util.UUID
+
+const val TOPIC = "io.bsamartins.schema-registry.user"
 
 fun getProducerProperties(): Properties {
     val props = Properties()
@@ -21,4 +25,19 @@ fun getProducerProperties(): Properties {
 fun createProducer(): Producer<String, User> {
     val props = getProducerProperties()
     return KafkaProducer(props)
+}
+
+fun main() {
+    val producer = createProducer()
+    val record = ProducerRecord(
+        TOPIC,
+        UUID.randomUUID().toString(),
+        User.newBuilder()
+            .setName("Tom Cruise")
+            .setFavoriteColor("Red")
+            .setFavoriteNumber(10)
+            .setAge(59)
+            .build()
+    )
+    producer.send(record).get()
 }
