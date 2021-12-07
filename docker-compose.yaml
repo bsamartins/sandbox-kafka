@@ -32,6 +32,17 @@ services:
     ports:
       - 8085:8085
 
+  ksql:
+    image: confluentinc/cp-ksql-server:4.1.4
+    environment:
+      - KSQL_BOOTSTRAP_SERVERS=localhost:9092
+      - KSQL_LISTENERS=http://0.0.0.0:8088/
+      - KSQL_KSQL_SERVICE_ID=ksql_service_3_
+      - KSQL_PRODUCER_INTERCEPTOR_CLASSES=io.confluent.monitoring.clients.interceptor.MonitoringProducerInterceptor
+      - KSQL_CONSUMER_INTERCEPTOR_CLASSES=io.confluent.monitoring.clients.interceptor.MonitoringConsumerInterceptor
+    ports:
+      - 8088:8088
+
 volumes:
   zookeeper_data:
     driver: local

@@ -13,3 +13,16 @@ services:
     environment:
       - ADV_HOST=192.168.1.8
       - RUNNING_SAMPLEDATA=0
+
+  ksql:
+    image: confluentinc/cp-ksql-server:4.1.4
+    depends_on:
+      - landoop
+    environment:
+      - KSQL_BOOTSTRAP_SERVERS=landoop:9092
+      - KSQL_LISTENERS=http://0.0.0.0:8088/
+      - KSQL_KSQL_SERVICE_ID=ksql_service_3_
+      - KSQL_PRODUCER_INTERCEPTOR_CLASSES=io.confluent.monitoring.clients.interceptor.MonitoringProducerInterceptor
+      - KSQL_CONSUMER_INTERCEPTOR_CLASSES=io.confluent.monitoring.clients.interceptor.MonitoringConsumerInterceptor
+    ports:
+      - 8088:8088

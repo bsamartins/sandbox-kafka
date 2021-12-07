@@ -12,8 +12,15 @@ subprojects {
     }
 
     dependencies {
+        val implementation by configurations
+        implementation(platform("com.fasterxml.jackson:jackson-bom:2.13.0"))
+        implementation(platform("org.apache.logging.log4j:log4j-bom:2.14.1"))
+        implementation(platform("org.apache.logging.log4j:log4j-api-kotlin-parent:1.1.0"))
+//        implementation("org.apache.logging.log4j:log4j-api-kotlin")
+
         constraints {
             add("implementation", "org.apache.kafka:kafka-clients:3.0.0")
+            add("implementation", "org.apache.kafka:kafka-streams:3.0.0")
             add("implementation", "org.apache.avro:avro:1.11.0")
             add("implementation", "io.confluent:kafka-avro-serializer:7.0.0")
         }

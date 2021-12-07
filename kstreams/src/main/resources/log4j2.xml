@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%-15t{15}] [%-5level] %-36logger{36} - %msg%n"/>
+        </Console>
+    </Appenders>
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="Console"/>
+        </Root>
+        <Logger name="org.apache.kafka.clients.producer.ProducerConfig" level="error"  />
+        <Logger name="org.apache.kafka.clients.consumer.ConsumerConfig" level="error"  />
+        <Logger name="org.apache.kafka.clients.consumer.internals" level="error"  />
+        <Logger name="org.apache.kafka.streams.StreamsConfig" level="error"  />
+        <Logger name="org.apache.kafka.streams.processor.internals" level="error"  />
+        <Logger name="org.apache.kafka.clients.admin.AdminClientConfig" level="error"  />
+        <Logger name="org.apache.kafka.common.utils.AppInfoParser   " level="error"  />
+    </Loggers>
+</Configuration>
