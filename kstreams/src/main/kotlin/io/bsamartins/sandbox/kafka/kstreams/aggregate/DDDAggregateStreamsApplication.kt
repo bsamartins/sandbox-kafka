@@ -20,20 +20,22 @@ import org.apache.kafka.streams.kstream.Materialized
 import org.apache.kafka.streams.kstream.Produced
 import org.apache.kafka.streams.state.KeyValueStore
 import org.apache.logging.log4j.LogManager
+import java.time.Duration
 import java.util.*
 
 fun main() {
     val logger = LogManager.getLogger("streams")
 
     val props = Properties()
-    props[StreamsConfig.APPLICATION_ID_CONFIG] = "ddd-aggregate"
+    props[StreamsConfig.APPLICATION_ID_CONFIG] = "io.bsamartins.ddd-aggregate"
     props[StreamsConfig.BOOTSTRAP_SERVERS_CONFIG] = "localhost:9092"
     props[StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG] = Serdes.String()::class.java
     props[StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG] = Serdes.String()::class.java
+    props[StreamsConfig.POLL_MS_CONFIG] = Duration.ofSeconds(1).toMillis()
 
     val builder = StreamsBuilder()
 
-    val defaultIdSerde = Serdes.String()
+    val defaultIdSerde = Serdes.Integer()
     val userSerde = jsonSerde<Record<User>>()
     val contactSerde = jsonSerde<Record<Contact>>()
     val contactsSerde = jsonSerde<Contacts>()
@@ -47,12 +49,12 @@ fun main() {
         .groupByKey(Grouped.with(defaultIdSerde, contactSerde))
         .aggregate(
             { null },
-            { contactId: String, contactRecord: Record<Contact>, latest: LatestContact? ->
+            { contactId, contactRecord, latest: LatestContact? ->
                 logger.info("contact: key={}, contact={}, latest={}", contactId, contactRecord, latest)
                 val userId = (contactRecord.after ?: contactRecord.before)!!.userId
                 LatestContact(id = contactId, userId = userId, latest = contactRecord.after)
             },
-            Materialized.`as`<String, LatestContact, KeyValueStore<Bytes, ByteArray>>(Topic.USER_CONTACT_TOPIC + "_table_temp")
+            Materialized.`as`<Int, LatestContact, KeyValueStore<Bytes, ByteArray>>(Topic.USER_CONTACT_TOPIC + "_table_temp")
                 .withKeySerde(defaultIdSerde)
                 .withValueSerde(latestContactSerde)
         )
@@ -64,12 +66,12 @@ fun main() {
         .groupByKey(Grouped.with(defaultIdSerde, latestContactSerde))
         .aggregate(
             { Contacts() },
-            { userId: String, latest: LatestContact, contacts: Contacts ->
+            { userId, latest, contacts: Contacts ->
                 logger.info("contacts: userId={}, latest={}, contacts={}", userId, latest, contacts)
                 contacts.update(latest)
                 contacts
             },
-            Materialized.`as`<String, Contacts, KeyValueStore<Bytes, ByteArray>>(Topic.USER_CONTACT_TOPIC + "_table_aggregate")
+            Materialized.`as`<Int, Contacts, KeyValueStore<Bytes, ByteArray>>(Topic.USER_CONTACT_TOPIC + "_table_aggregate")
                 .withKeySerde(defaultIdSerde)
                 .withValueSerde(contactsSerde)
         )
@@ -89,11 +91,11 @@ fun main() {
     logger.info("Started streams")
 }
 
-data class LatestContact(val id: String, val userId: String, val latest: Contact?)
+data class LatestContact(val id: Int, val userId: Int, val latest: Contact?)
 
 class Contacts {
     @JsonProperty
-    private val entries: MutableMap<String, Contact> = mutableMapOf()
+    private val entries: MutableMap<Int, Contact> = mutableMapOf()
 
     fun update(contact: LatestContact) {
         if (contact.latest != null) {

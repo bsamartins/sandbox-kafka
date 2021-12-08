@@ -10,6 +10,15 @@ fun main() {
     logger.info("Running setup")
     val admin = createAdminClient()
     val topics = setOf(Topic.USER_TOPIC, Topic.USER_CONTACT_TOPIC, Topic.USER_AGGREGATE_TOPIC)
-    admin.deleteTopics(topics)
-    admin.createTopics(topics.map { topic -> NewTopic(topic, 1, 1) })
+
+    admin.listTopics()
+        .names()
+        .get()
+        .filter { it.startsWith("io.bsamartins") }
+        .let { admin.deleteTopics(it) }
+        .all()
+        .get()
+    admin.createTopics(topics.map { topic -> NewTopic(topic, 2, 1) })
+        .all()
+        .get()
 }
